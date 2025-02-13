@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>QR Code Display</title>
+  <style>
+    body, h1, img, a {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+    body {
+      font-family: 'Arial', sans-serif;
+      background: linear-gradient(to bottom, #87ceeb, #e9f7e9);
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      min-height: 100vh;
+    }
+    .container {
+      background: white;
+      padding: 2rem;
+      border-radius: 12px;
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+      max-width: 400px;
+      width: 90%;
+      text-align: center;
+    }
+    .container h1 {
+      color: #4CAF50;
+      margin-bottom: 1rem;
+    }
+    .qr-code {
+      max-width: 100%;
+      border: 2px solid #4CAF50;
+      border-radius: 8px;
+      padding: 10px;
+      margin-bottom: 1rem;
+    }
+    .back-button {
+      padding: 0.8rem 1.5rem;
+      background-color: #4CAF50;
+      color: white;
+      border: none;
+      border-radius: 8px;
+      cursor: pointer;
+      font-size: 1rem;
+    }
+    .back-button:hover {
+      background-color: #45a049;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h1>Generated QR Code</h1>
+    <div id="qrCodeContainer">
+      <!-- QR Code will be dynamically loaded here -->
+      <img id="qrCodeImage" class="qr-code" alt="QR Code" />
+      <br>
+    </div>
+    <button class="back-button" onclick="window.location.href='index.html'">Back to Home</button>
+  </div>
+
+  <script>
+    // Extract the Aadhar number from the URL
+    const urlParams = new URLSearchParams(window.location.search);
+    const aadhar = urlParams.get('aadhar');
+
+    // If Aadhar is found in the URL, update the image source
+    if (aadhar) {
+      const qrCodeImage = document.getElementById('qrCodeImage');
+      qrCodeImage.src = `qr/${aadhar}.png`; // Dynamically set the QR code image source
+    } else {
+      // Handle the case where Aadhar is not found
+      const qrCodeContainer = document.getElementById('qrCodeContainer');
+      qrCodeContainer.innerHTML = '<p>Invalid or missing Aadhar number.</p>';
+    }
+  </script>
+</body>
+</html>

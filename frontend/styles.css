@@ -1,0 +1,136 @@
+/* Global Reset */
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+/* Body Styling */
+body {
+  font-family: 'Arial', sans-serif;
+  background: linear-gradient(to bottom right, #6a11cb, #2575fc); /* Vibrant gradient */
+  color: #fff;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100vh;
+  margin: 0;
+  background-image: url('https://www.birostrategy.com.au/wp-content/uploads/2023/10/pexels-erik-scheel-95425-scaled_1000x.webp');
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+  background-attachment: fixed;
+  filter: brightness(0.9);
+}
+
+/* Container */
+.container {
+  text-align: center;
+  background: rgba(255, 255, 255, 0.85); /* Transparent white background */
+  padding: 40px;
+  border-radius: 20px;
+  box-shadow: 0 10px 20px rgba(0, 0, 0, 0.25); /* Subtle shadow */
+  width: 90%;
+  max-width: 600px;
+  animation: fadeIn 1s ease-in-out;
+}
+
+/* Heading */
+h1 {
+  font-size: 36px;
+  color: #444;
+  font-weight: bold;
+  margin-bottom: 30px;
+  text-transform: uppercase;
+  letter-spacing: 1.5px;
+  background: -webkit-linear-gradient(#6a11cb, #2575fc);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent; /* Gradient text */
+}
+
+/* Button Container */
+.roles {
+  display: flex;
+  justify-content: center;
+  gap: 20px;
+  flex-wrap: wrap; /* Allows wrapping for smaller screens */
+}
+
+/* Button Styling */
+button {
+  padding: 15px 25px;
+  font-size: 18px;
+  font-weight: bold;
+  color: #fff;
+  border: none;
+  border-radius: 10px;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  box-shadow: 0 6px 15px rgba(0, 0, 0, 0.2); /* Button shadow */
+  width: 150px;
+  text-transform: uppercase;
+}
+
+/* Button Colors */
+button:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 12px 20px rgba(0, 0, 0, 0.3);
+}
+
+button:focus {
+  outline: none;
+}
+
+/* Farmer Button */
+button:nth-child(1) {
+  background: linear-gradient(to bottom right, #34eb40, #0f9d0f);
+}
+
+button:nth-child(1):hover {
+  background: linear-gradient(to bottom right, #28c634, #0c7b0c);
+}
+
+/* Pesticide Seller Button */
+button:nth-child(2) {
+  background: linear-gradient(to bottom right, #ffa500, #ff6a00);
+}
+
+button:nth-child(2):hover {
+  background: linear-gradient(to bottom right, #e59400, #d65c00);
+}
+
+/* Distributor Button */
+button:nth-child(3) {
+  background: linear-gradient(to bottom right, #03a9f4, #01579b);
+}
+
+button:nth-child(3):hover {
+  background: linear-gradient(to bottom right, #0288d1, #014374);
+}
+
+/* Responsiveness */
+@media (max-width: 768px) {
+  .container {
+    padding: 30px;
+  }
+
+  h1 {
+    font-size: 28px;
+  }
+
+  button {
+    width: 100%; /* Full-width buttons on smaller screens */
+  }
+}
+
+/* Animation */
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(-20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}

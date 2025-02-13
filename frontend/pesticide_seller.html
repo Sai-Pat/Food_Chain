@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Pesticide Seller Login</title>
+  <link rel="stylesheet" href="styles_ps.css">
+</head>
+<body>
+  <div class="container">
+    <h1>Pesticide Seller Login</h1>
+    <form id="pesticide-seller-login-form">
+      <label for="name">Name:</label>
+      <input type="text" id="name" name="name" required />
+
+
+      <label for="securityCode">Password:</label>
+      <input type="password" id="securityCode" name="securityCode" required />
+
+      <button type="submit">Login</button>
+    </form>
+  </div>
+
+  <script>
+    const predefinedSellerCredentials = {
+      name: "Pesticide Seller",
+      securityCode: "5678",
+    };
+
+    document.getElementById("pesticide-seller-login-form").addEventListener("submit", (e) => {
+      e.preventDefault();
+
+      const name = document.getElementById("name").value;
+      const securityCode = document.getElementById("securityCode").value;
+
+      if (
+        name === predefinedSellerCredentials.name &&
+        securityCode === predefinedSellerCredentials.securityCode
+      ) {
+        alert("Login successful!");
+        window.location.href = "pesticide_seller_input.html";
+      } else {
+        alert("Invalid credentials. Please try again.");
+      }
+    });
+  </script>
+</html>

@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Product Traceability</title>
+  <link rel="stylesheet" href="styleT.css">
+</head>
+<body>
+  <div class="container">
+    <h1>Product Origin Details</h1>
+    
+    <!-- Farmer Details -->
+    <div class="section">
+      <h2>Farmer Details</h2>
+      <p><strong>Name:</strong> {{farmer.name}}</p>
+      <p><strong>Location:</strong> {{farmer.location}}</p>
+      <p><strong>Farm Size:</strong> {{farmer.farmSize}} acres</p>
+      <p><strong>Certification:</strong> {{farmer.npopCertification ? 'NPOP Certified' : 'Standard'}}</p>
+    </div>
+
+    <!-- Products Information -->
+    <div class="section">
+      <h2>Products</h2>
+      {% if farmer.products.length > 0 %}
+        <ul>
+          {% for product in farmer.products %}
+            <li>
+              <strong>Product Name:</strong> {{product.productName}}<br>
+              <strong>Quantity:</strong> {{product.productQuantity}} units<br>
+              <strong>Growth Period:</strong> {{product.daysToGrow}} days
+            </li>
+          {% endfor %}
+        </ul>
+      {% else %}
+        <p>No products found.</p>
+      {% endif %}
+    </div>
+
+    <!-- Pesticides Information -->
+    <div class="section">
+      <h2>Pesticides Used</h2>
+      {% if pesticide.pesticides.length > 0 %}
+        <ul>
+          {% for p in pesticide.pesticides %}
+            <li>
+              <strong>Name:</strong> {{p.pesticideName}}<br>
+              <strong>Type:</strong> {{p.pesticideType}}<br>
+              <strong>Quantity:</strong> {{p.quantity}} units
+            </li>
+          {% endfor %}
+        </ul>
+      {% else %}
+        <p>No pesticide data available.</p>
+      {% endif %}
+    </div>
+
+    <!-- Distributor Details -->
+    <div class="section">
+      <h2>Distributor Details</h2>
+      <p><strong>Distributor Name:</strong> {{distributor.vname}}</p>
+      <p><strong>Location:</strong> {{distributor.location}}</p>
+      <p><strong>Product Name:</strong> {{distributor.productName}}</p>
+      <p><strong>Picking Date:</strong> {{new Date(distributor.distributor.pickingDate).toLocaleDateString()}}</p>
+    </div>
+  </div>
+</body>
+</html>

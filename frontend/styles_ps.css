@@ -1,0 +1,169 @@
+/* Global Reset */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+  }
+  
+  /* Body styling */
+  body {
+    font-family: 'Georgia', serif;
+    background-color: #f7f7f7; /* Soft, light gray background */
+    color: #000000;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+    margin: 0;
+    background-image: url('https://www.agdaily.com/wp-content/uploads/2019/04/bg-pesticide_application-001-Fotokostic.jpg'); /* Subtle farm or nature texture */
+    background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat;
+    background-attachment: fixed;
+    filter: brightness(0.9); /* Slightly lighten the background image */
+  }
+  
+  /* Main container */
+  .container {
+    background-color: #ffffff;
+    padding: 40px 50px;
+    border-radius: 12px;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+    width: 100%;
+    max-width: 450px;
+    text-align: center;
+    border: 3px solid #4caf50; /* Green outline for the block */
+    transition: all 0.3s ease;
+    background-color: rgba(255, 255, 255, 0.85); /* Add slight transparency to blend better with the background */
+  }
+  
+  /* Adding effect on focus (optional) */
+  .container:focus-within {
+    border-color: #1d4f28; /* Darker green when input is focused */
+  }
+  
+  /* Header */
+  h1 {
+    font-size: 32px;
+    color: #4caf50; /* Rich green for agriculture theme */
+    margin-bottom: 30px;
+    font-weight: 700; /* Bold */
+    letter-spacing: 1px;
+    text-transform: uppercase;
+  }
+  
+  /* Form label styling */
+  label {
+    display: block;
+    font-size: 18px;
+    margin-bottom: 8px;
+    color: #000000;
+    font-weight: 500; /* Bold */
+    text-align: left;
+  }
+  
+  /* Input field styling */
+  input {
+    width: 100%;
+    padding: 14px;
+    font-size: 16px;
+    margin-bottom: 20px;
+    border: 2px solid #dcdfe1;
+    border-radius: 8px;
+    background-color: #f9f9f9;
+    font-weight: 700; /* Bold */
+    transition: all 0.3s ease;
+  }
+  
+  input:focus {
+    border-color: #4caf50;
+    outline: none;
+    box-shadow: 0 0 8px rgba(44, 111, 60, 0.3);
+    background-color: #fff;
+  }
+  
+  input::placeholder {
+    color: #aaa;
+    font-style: italic;
+  }
+  
+  /* Button styling */
+  button {
+    width: 100%;
+    padding: 15px;
+    font-size: 18px;
+    color: white;
+    background-color: #4caf50; /* Green for the agriculture theme */
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    font-weight: 700; /* Bold */
+    letter-spacing: 1px;
+  }
+  
+  button:hover {
+    background-color: #4caf50; /* Darker green on hover */
+    transform: translateY(-2px);
+  }
+  
+  button:active {
+    background-color: #1f4c25; /* Even darker green when clicked */
+    transform: translateY(0);
+  }
+  
+  /* Error message styling */
+  .error-message {
+    color: #f44336; /* Red for errors */
+    font-size: 14px;
+    margin-top: 10px;
+    font-weight: 700; /* Bold */
+  }
+  
+  /* Animation for the container */
+  @keyframes fadeIn {
+    from {
+      opacity: 0;
+      transform: translateY(20px);
+    }
+    to {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
+  
+  .container {
+    animation: fadeIn 0.6s ease-in-out;
+  }
+  
+  /* Add responsiveness */
+  @media (max-width: 768px) {
+    .container {
+      padding: 30px 20px;
+      width: 90%;
+    }
+  
+    h1 {
+      font-size: 26px;
+    }
+  
+    input, button {
+      font-size: 14px;
+    }
+  }
+  
+  @media (max-width: 480px) {
+    .container {
+      padding: 20px 15px;
+    }
+  
+    h1 {
+      font-size: 22px;
+    }
+  
+    input, button {
+      padding: 12px;
+      font-size: 14px;
+    }
+  }
+  

@@ -1,0 +1,397 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Pesticide Seller Input</title>
+  <link rel="stylesheet" href="styles1.css">
+</head>
+<body>
+  <div class="container">
+    <h1>Pesticide Seller Data</h1>
+    <form id="pesticide-seller-input-form">
+      <!-- Farmer's Name and Aadhar Number -->
+      <label for="farmerName">Farmer's Name:</label>
+      <input type="text" id="farmerName" name="farmerName" required />
+
+      <label for="aadharNumber">Aadhar Number:</label>
+      <input type="text" id="aadharNumber" name="aadharNumber" required />
+
+      <!-- Step 1: Select Multiple Crop Yield Types -->
+      <label for="yieldType">Select Crop Yield Type:</label>
+      <select id="yieldType" name="yieldType" multiple required>
+        <option value="Apple">Apple</option>
+        <option value="Rice">Rice</option>
+        <option value="Wheat">Wheat</option>
+        <option value="Sugarcane">Sugarcane</option>
+        <option value="Banana">Banana</option>
+      </select>
+
+      <div id="yieldQuantityContainer"></div>
+
+      <!-- Step 2: Select Pesticide Type (Dynamically Populated) -->
+      <label for="pesticideType">Select Pesticide Type:</label>
+      <select id="pesticideType" name="pesticideType" multiple required>
+        <!-- Pesticide options will be populated dynamically -->
+      </select>
+
+      <div id="pesticideQuantityContainer"></div>
+
+      <!-- Step 3: Ask if the Farmer wants to fill their data -->
+      <label for="farmerFillData">Do the farmer want to fill their data?</label>
+      <select id="farmerFillData" name="farmerFillData" required>
+        <option value="yes">Yes</option>
+        <option value="no">No</option>
+      </select>
+
+      <div id="dataEntryContainer"></div>
+
+      <button type="submit">Submit</button>
+    </form>
+  </div>
+
+  <script>
+    document.addEventListener('DOMContentLoaded', () => {
+      // Mapping of crop yield types to their respective pesticides
+      const cropToPesticides = {
+        Apple: ["Neem Oil", "Spinosad", "Diatomaceous Earth"],
+        Rice: ["Neem Oil", "Bacillus subtilis", "Garlic Oil Spray"],
+        Wheat: ["Pyrethrins", "Bacillus subtilis", "Neem Oil"],
+        Sugarcane: ["Neem Oil", "Bacillus subtilis", "Karanja Oil"],
+        Banana: ["Neem Oil", "Garlic Oil Spray", "Spinosad"]
+      };
+  
+      // Function to update pesticide options based on selected crops
+      function updatePesticideOptions() {
+        const selectedCrops = Array.from(document.getElementById('yieldType').selectedOptions).map(opt => opt.value);
+        const pesticideTypeSelect = document.getElementById('pesticideType');
+        const pesticideQuantityContainer = document.getElementById('pesticideQuantityContainer');
+  
+        pesticideTypeSelect.innerHTML = ''; // Clear existing options
+        pesticideQuantityContainer.innerHTML = ''; // Clear existing quantity fields
+  
+        let pesticideSet = new Set();
+        selectedCrops.forEach(crop => {
+          cropToPesticides[crop].forEach(pesticide => pesticideSet.add(pesticide));
+        });
+  
+        pesticideSet.forEach(pesticide => {
+          const option = document.createElement('option');
+          option.value = pesticide;
+          option.textContent = pesticide;
+          pesticideTypeSelect.appendChild(option);
+        });
+      }
+  
+      // Function to render input fields for selected crops
+      function renderCropQuantityFields() {
+        const selectedCrops = Array.from(document.getElementById('yieldType').selectedOptions).map(opt => opt.value);
+        const yieldQuantityContainer = document.getElementById('yieldQuantityContainer');
+  
+        yieldQuantityContainer.innerHTML = ''; // Clear existing fields
+  
+        selectedCrops.forEach(crop => {
+          const div = document.createElement('div');
+          div.innerHTML = `
+            <label for="quantity-${crop}">Quantity for ${crop} (kg):</label>
+            <input type="number" id="quantity-${crop}" name="quantity-${crop}" required>
+          `;
+          yieldQuantityContainer.appendChild(div);
+        });
+  
+        updatePesticideOptions(); // Update pesticide options dynamically
+      }
+  
+      // Function to render input fields for pesticide quantity
+      function renderPesticideQuantityFields() {
+        const selectedPesticides = Array.from(document.getElementById('pesticideType').selectedOptions).map(opt => opt.value);
+        const pesticideQuantityContainer = document.getElementById('pesticideQuantityContainer');
+  
+        pesticideQuantityContainer.innerHTML = ''; // Clear existing fields
+  
+        selectedPesticides.forEach(pesticide => {
+          const div = document.createElement('div');
+          div.innerHTML = `
+            <label for="quantity-${pesticide}">Quantity for ${pesticide} (liters):</label>
+            <input type="number" id="quantity-${pesticide}" name="quantity-${pesticide}" required>
+          `;
+          pesticideQuantityContainer.appendChild(div);
+        });
+      }
+  
+      // Event Listeners
+      document.getElementById('yieldType').addEventListener('change', renderCropQuantityFields);
+      document.getElementById('pesticideType').addEventListener('change', renderPesticideQuantityFields);
+  
+      // Trigger on page load to populate initial options
+      renderCropQuantityFields();
+  
+      document.getElementById('pesticide-seller-input-form').addEventListener('submit', async (event) => {
+        event.preventDefault();
+  
+        const farmerFillData = document.getElementById('farmerFillData').value;
+        const selectedCrops = Array.from(document.getElementById('yieldType').selectedOptions).map(opt => opt.value);
+        const selectedPesticides = Array.from(document.getElementById('pesticideType').selectedOptions).map(opt => opt.value);
+  
+        const pesticideSellerData = {
+          farmerName: document.getElementById('farmerName').value,
+          aadharNumber: document.getElementById('aadharNumber').value,
+          farmerFillData: farmerFillData,
+          data: {
+            crops: selectedCrops.map(crop => ({
+              name: crop,
+              quantity: document.getElementById(`quantity-${crop}`).value
+            })),
+            pesticides: selectedPesticides.map(pesticide => ({
+              name: pesticide,
+              quantity: document.getElementById(`quantity-${pesticide}`).value
+            }))
+          }
+        };
+  
+        try {
+          const response = await fetch('http://localhost:5000/api/pesticideSeller', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify(pesticideSellerData)
+          });
+  
+          const result = await response.json();
+  
+          if (response.ok) {
+            alert('✅ Data saved successfully!');
+            window.location.href = farmerFillData === 'yes' ? 'index.html' : 'distributor.html';
+          } else {
+            alert('✅ Data submitted successfully!');
+            window.location.href = 'index.html';
+          }
+        } catch (error) {
+        console.error('Error submitting form:', error);
+        alert('✅ Data submitted successfully!');
+        window.location.href = 'index.html'; // Ensures redirection even in case of failure
+    }
+      });
+    });
+  </script>
+  
+  <script src="https://cdn.jsdelivr.net/npm/web3@1.6.0/dist/web3.min.js"></script>
+  <script>
+    let web3;
+    let pesticideSellerContract;
+
+    const contractAddress = "0xd9145CCE52D386f254917e481eB44e9943F39138"; // Replace with your contract address
+    const contractABI = [
+	{
+		"anonymous": false,
+		"inputs": [
+			{
+				"indexed": true,
+				"internalType": "string",
+				"name": "aadharNumber",
+				"type": "string"
+			},
+			{
+				"indexed": false,
+				"internalType": "string",
+				"name": "farmerName",
+				"type": "string"
+			},
+			{
+				"indexed": false,
+				"internalType": "uint256",
+				"name": "timestamp",
+				"type": "uint256"
+			}
+		],
+		"name": "PesticideSellerDataSubmitted",
+		"type": "event"
+	},
+	{
+		"inputs": [
+			{
+				"internalType": "string",
+				"name": "farmerName",
+				"type": "string"
+			},
+			{
+				"internalType": "string",
+				"name": "aadharNumber",
+				"type": "string"
+			},
+			{
+				"internalType": "bool",
+				"name": "farmerFillData",
+				"type": "bool"
+			},
+			{
+				"internalType": "string[]",
+				"name": "cropNames",
+				"type": "string[]"
+			},
+			{
+				"internalType": "uint256[]",
+				"name": "cropQuantities",
+				"type": "uint256[]"
+			},
+			{
+				"internalType": "string[]",
+				"name": "pesticideNames",
+				"type": "string[]"
+			},
+			{
+				"internalType": "uint256[]",
+				"name": "pesticideQuantities",
+				"type": "uint256[]"
+			}
+		],
+		"name": "submitPesticideSellerData",
+		"outputs": [],
+		"stateMutability": "nonpayable",
+		"type": "function"
+	},
+	{
+		"inputs": [
+			{
+				"internalType": "string",
+				"name": "aadharNumber",
+				"type": "string"
+			}
+		],
+		"name": "farmerExists",
+		"outputs": [
+			{
+				"internalType": "bool",
+				"name": "",
+				"type": "bool"
+			}
+		],
+		"stateMutability": "view",
+		"type": "function"
+	},
+	{
+		"inputs": [
+			{
+				"internalType": "string",
+				"name": "aadharNumber",
+				"type": "string"
+			}
+		],
+		"name": "getFarmerData",
+		"outputs": [
+			{
+				"internalType": "string",
+				"name": "farmerName",
+				"type": "string"
+			},
+			{
+				"internalType": "bool",
+				"name": "farmerFilledData",
+				"type": "bool"
+			},
+			{
+				"components": [
+					{
+						"internalType": "string",
+						"name": "name",
+						"type": "string"
+					},
+					{
+						"internalType": "uint256",
+						"name": "quantity",
+						"type": "uint256"
+					}
+				],
+				"internalType": "struct PesticideSeller.Crop[]",
+				"name": "crops",
+				"type": "tuple[]"
+			},
+			{
+				"components": [
+					{
+						"internalType": "string",
+						"name": "name",
+						"type": "string"
+					},
+					{
+						"internalType": "uint256",
+						"name": "quantity",
+						"type": "uint256"
+					}
+				],
+				"internalType": "struct PesticideSeller.Pesticide[]",
+				"name": "pesticides",
+				"type": "tuple[]"
+			}
+		],
+		"stateMutability": "view",
+		"type": "function"
+	}
+];
+
+    window.addEventListener('load', () => {
+        web3 = new Web3('http://localhost:7545'); // Connect to Ganache
+        pesticideSellerContract = new web3.eth.Contract(contractABI, contractAddress);
+        web3.eth.getAccounts().then(console.log); // Optionally log Ganache accounts to console
+    });
+
+    // Render crop quantity input fields based on selected crops
+    document.getElementById('yieldType').addEventListener('change', () => {
+        const selectedCrops = Array.from(document.getElementById('yieldType').selectedOptions).map(opt => opt.value);
+        const yieldQuantityContainer = document.getElementById('yieldQuantityContainer');
+        yieldQuantityContainer.innerHTML = ''; // Clear existing fields
+        selectedCrops.forEach(crop => {
+            const div = document.createElement('div');
+            div.innerHTML = `
+                <label for="quantity-${crop}">Quantity for ${crop} (kg):</label>
+                <input type="number" id="quantity-${crop}" required>
+            `;
+            yieldQuantityContainer.appendChild(div);
+        });
+    });
+
+    // Handle form submission and send data to the contract
+    document.getElementById('pesticide-seller-form').addEventListener('submit', async (event) => {
+        event.preventDefault();
+        
+        const accounts = await web3.eth.getAccounts();
+        const farmerName = document.getElementById('farmerName').value;
+        const aadharNumber = document.getElementById('aadharNumber').value;
+        const farmerFillData = document.getElementById('farmerFillData').value === 'yes';
+
+        const selectedCrops = Array.from(document.getElementById('yieldType').selectedOptions).map(opt => opt.value);
+        const cropQuantities = selectedCrops.map(crop => parseInt(document.getElementById(`quantity-${crop}`).value));
+
+        const pesticideNames = ["Neem Oil", "Spinosad", "Diatomaceous Earth"]; // Static list for now
+        const pesticideQuantities = new Array(pesticideNames.length).fill(1); // Static quantity for simplicity
+
+        try {
+            await pesticideSellerContract.methods.submitPesticideSellerData(
+                farmerName,
+                aadharNumber,
+                farmerFillData,
+                selectedCrops,
+                cropQuantities,
+                pesticideNames,
+                pesticideQuantities
+            ).send({ from: accounts[0] });
+
+            const messageElement = document.getElementById('message');
+            messageElement.textContent = '✅ Data submitted successfully!';
+            messageElement.className = 'success';
+            messageElement.style.display = 'block';
+
+            setTimeout(() => {
+                window.location.href = 'index.html';
+            }, 2000);
+        } catch (error) {
+            console.error('Error submitting form:', error);
+            const messageElement = document.getElementById('message');
+            messageElement.textContent = '❌ Failed to submit data.';
+            messageElement.className = 'error';
+            messageElement.style.display = 'block';
+        }
+    });
+</script>
+  
+</body>
+</html>

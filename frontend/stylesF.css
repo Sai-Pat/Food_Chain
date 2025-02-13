@@ -1,0 +1,173 @@
+/* General styles */
+body {
+  font-family: Arial, sans-serif;
+  background-color: #f4f7fa;
+  color: #333;
+  margin: 0;
+  padding: 0;
+  background: url('https://tinyurl.com/3aah9cxw') no-repeat center center fixed; /* Background Image URL */
+  background-size: cover;  /* Ensures the image covers the body */
+  background-position: center;
+  background-attachment: fixed;  /* Keeps the background fixed while scrolling */
+  display: flex;
+  justify-content: center;
+  align-items: flex-start;  /* Start alignment for the content */
+  min-height: 100vh; /* Ensures body always takes full height */
+  width: 100%; /* Full width */
+  color: #333;
+  overflow-y: auto; /* Enables vertical scrolling */
+}
+
+/* Container */
+.container {
+  width: 80%;
+  max-width: 1200px;
+  margin: 40px auto;
+  padding: 20px;
+  background-color: rgba(255, 255, 255,0);  /* Added opacity to the background */
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  border-radius: 8px;
+}
+
+/* Heading */
+h1 {
+  text-align: center;
+  font-size: 2.5em;
+  color: #2c3e50;
+  margin-bottom: 20px;
+}
+
+/* Form container for side-by-side layout */
+.form-container {
+  display: flex;
+  justify-content: space-between;
+  gap: 20px;  /* Reduced gap between the form and pesticide section */
+}
+
+/* Form row styles */
+.form-row {
+  margin-bottom: 15px;  /* Reduced margin for less spacing */
+  width: 200%;
+}
+
+label {
+  display: block;
+  font-weight: bold;
+  margin-bottom: 8px;
+  font-size: 1.1em;
+}
+
+input[type="text"],
+input[type="number"],
+input[type="date"],
+input[type="checkbox"],
+select {
+  width: 100%;
+  padding: 10px;
+  font-size: 1em;
+  border: 1px solid #ddd;
+  border-radius: 6px;
+  box-sizing: border-box;
+}
+
+input[type="checkbox"] {
+  width: auto;
+}
+
+button {
+  padding: 12px 20px;
+  background-color: #4CAF50;
+  color: white;
+  border: none;
+  border-radius: 6px;
+  font-size: 1.2em;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+}
+
+button:hover {
+  background-color: #45a049;
+}
+
+/* Pesticide Data Section */
+/* Pesticide details box */
+.pesticide-details {
+  width: 45%; /* Reduced width of pesticide details box */
+ /* Adjust height as needed, you can set a specific value if required */
+  padding: 20px;
+  border: 1px solid #ddd;
+  border-radius: 6px;
+
+  background-color: #f9f9f9;
+  position: relative;
+  margin-top: 30px ;
+
+}
+
+/* Optional: If you want to control the size of the individual fields in the pesticide details */
+.pesticide-details input,
+.pesticide-details select {
+  width: 100%;
+  padding: 10px;
+  font-size: 1em;
+}
+
+
+
+
+.pesticide-section h2 {
+  color: #2c3e50;
+}
+
+#pesticideList {
+  list-style-type: none;
+  padding: 0;
+}
+
+#pesticideList li {
+  background-color: #f0f8ff;
+  padding: 12px;
+  margin-bottom: 10px;
+  border-left: 5px solid #007bff;
+  font-size: 1em;
+  border-radius: 5px;
+}
+
+#pesticideList li:last-child {
+  margin-bottom: 0;
+}
+
+/* Message styles */
+#message {
+  padding: 15px;
+  margin-top: 20px;
+  text-align: center;
+  border-radius: 6px;
+  font-size: 1.1em;
+}
+
+#message.success {
+  background-color: #d4edda;
+  color: #155724;
+}
+
+#message.error {
+  background-color: #f8d7da;
+  color: #721c24;
+}
+
+@media (max-width: 768px) {
+  .container {
+    width: 95%;
+    padding: 10px;
+  }
+
+  .form-container {
+    flex-direction: column;
+  }
+
+  .pesticide-section {
+    width: 100%;
+    margin-top: 20px;
+  }
+}

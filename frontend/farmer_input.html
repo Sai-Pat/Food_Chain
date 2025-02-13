@@ -1,0 +1,468 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Farmer Data Submission</title>
+  <link rel="stylesheet" href="stylesF.css">
+</head>
+<body>
+  <div class="container">
+    <h1>Farmer Data Submission</h1>
+    <div class="form-container">
+      <form id="farmerForm">
+        <!-- Input Fields for Farmer Data -->
+        <div class="form-row">
+          <label for="name">Name:</label>
+          <input type="text" id="name" name="name" required />
+        </div>
+        <div class="form-row">
+          <label for="aadharId">Aadhar ID:</label>
+          <input type="text" id="aadharId" name="aadharId" required />
+        </div>
+
+        <!-- Additional Fields -->
+        <div class="form-row">
+          <label for="location">Location:</label>
+          <input type="text" id="location" name="location" required />
+        </div>
+        <div class="form-row">
+          <label for="farmSize">Farm Size (in acres):</label>
+          <input type="number" id="farmSize" name="farmSize" required />
+        </div>
+        <div class="form-row">
+          <label for="numOfProducts">Number of Products:</label>
+          <input type="number" id="numOfProducts" name="numOfProducts" min="1" required />
+        </div>
+        <div id="productsSection"></div>
+
+        <div class="form-row">
+          <label for="npopCertification">NPOP Certification (Optional):</label>
+          <input type="checkbox" id="npopCertification" name="npopCertification" />
+        </div>
+
+        <div id="message"></div>
+        <button type="submit">Submit</button>
+      </form>
+
+      <!-- Pesticide Data Section -->
+      <div id="pesticideDataSection" class="pesticide-section">
+        <h2>Pesticide Usage Details</h2>
+        <ul id="pesticideList">
+          <!-- Pesticide data will be appended here dynamically -->
+        </ul>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    // Dynamically generate product fields based on the number of products
+    document.getElementById('numOfProducts').addEventListener('change', function() {
+      const numOfProducts = parseInt(this.value, 10);
+      const productsSection = document.getElementById('productsSection');
+      productsSection.innerHTML = ''; // Clear previous inputs
+
+      for (let i = 0; i < numOfProducts; i++) {
+        const productDiv = document.createElement('div');
+        productDiv.classList.add('product-entry');
+        productDiv.innerHTML = `
+          <div class="form-row">
+            <label for="productName${i}">Product ${i + 1} Name:</label>
+            <input type="text" id="productName${i}" name="productName${i}" required />
+          </div>
+          <div class="form-row">
+            <label for="productQuantity${i}">Product ${i + 1} Quantity:</label>
+            <input type="number" id="productQuantity${i}" name="productQuantity${i}" required />
+          </div>
+          <div class="form-row">
+            <label for="plantingDate${i}">Planting Date for Product ${i + 1}:</label>
+            <input type="date" id="plantingDate${i}" name="plantingDate${i}" required />
+          </div>
+          <div class="form-row">
+            <label for="harvestingDate${i}">Harvesting Date for Product ${i + 1}:</label>
+            <input type="date" id="harvestingDate${i}" name="harvestingDate${i}" required />
+          </div>
+          <div class="form-row">
+            <label for="daysToGrow${i}">Days Taken to Grow (auto-calculated):</label>
+            <input type="text" id="daysToGrow${i}" name="daysToGrow${i}" readonly />
+          </div>
+          <div class="form-row">
+            <label for="cropType${i}">Select Crop Type for Product ${i + 1}:</label>
+            <select id="cropType${i}" name="cropType${i}">
+              <option value="Wheat">Wheat</option>
+              <option value="Rice">Rice</option>
+              <option value="Sugarcane">Sugarcane</option>
+              <option value="Cotton">Cotton</option>
+              <option value="Maize">Maize</option>
+            </select>
+          </div>
+        `;
+        productsSection.appendChild(productDiv);
+
+        // Attach event listeners for planting and harvesting date fields
+        document.getElementById(`plantingDate${i}`).addEventListener('change', () => calculateDays(i));
+        document.getElementById(`harvestingDate${i}`).addEventListener('change', () => calculateDays(i));
+      }
+    });
+
+    // Calculate the days taken to grow for each product
+    function calculateDays(index) {
+      const plantingDate = document.getElementById(`plantingDate${index}`).value;
+      const harvestingDate = document.getElementById(`harvestingDate${index}`).value;
+
+      if (plantingDate && harvestingDate) {
+        const planting = new Date(plantingDate);
+        const harvesting = new Date(harvestingDate);
+        const timeDiff = harvesting - planting;
+        const daysToGrow = timeDiff / (1000 * 3600 * 24);
+        document.getElementById(`daysToGrow${index}`).value = daysToGrow;
+      }
+    }
+
+    async function fetchPesticideData(aadharNumber) {
+      try {
+        console.log(`Fetching pesticide data for Aadhar: ${aadharNumber}`);
+        const response = await fetch(`http://localhost:5000/api/pesticideSeller/${aadharNumber}`);
+        const pesticideData = await response.json();
+        console.log('Pesticide Data:', pesticideData);
+
+        const pesticideList = document.getElementById('pesticideList');
+        pesticideList.innerHTML = ''; // Clear existing list
+
+        if (pesticideData.length === 0) {
+          const listItem = document.createElement('li');
+          listItem.textContent = 'No pesticide data available for this farmer.';
+          pesticideList.appendChild(listItem);
+        } else {
+          pesticideData.forEach(farmer => {
+            farmer.pesticides.forEach(pesticide => {
+              const listItem = document.createElement('li');
+              listItem.textContent = `${pesticide.pesticideName} - Quantity: ${pesticide.quantity}`;
+              pesticideList.appendChild(listItem);
+            });
+          });
+        }
+      } catch (error) {
+        console.error('Error fetching pesticide data:', error);
+      }
+    }
+
+    document.getElementById('farmerForm').addEventListener('submit', async (event) => {
+      event.preventDefault();
+
+      const farmerData = {
+        name: document.getElementById('name').value,
+        aadharId: document.getElementById('aadharId').value,
+        location: document.getElementById('location').value,
+        farmSize: document.getElementById('farmSize').value,
+        numOfProducts: document.getElementById('numOfProducts').value,
+        products: [],
+        npopCertification: document.getElementById('npopCertification').checked,
+      };
+
+      for (let i = 0; i < farmerData.numOfProducts; i++) {
+        farmerData.products.push({
+          productName: document.getElementById(`productName${i}`).value,
+          productQuantity: document.getElementById(`productQuantity${i}`).value,
+          plantingDate: document.getElementById(`plantingDate${i}`).value,
+          harvestingDate: document.getElementById(`harvestingDate${i}`).value,
+          daysToGrow: document.getElementById(`daysToGrow${i}`).value,
+          cropType: document.getElementById(`cropType${i}`).value,
+        });
+      }
+
+      try {
+        const response = await fetch('http://localhost:5000/api/farmer', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify(farmerData),
+        });
+
+        const result = await response.json();
+        const messageElement = document.getElementById('message');
+
+        if (response.ok) {
+          messageElement.textContent = '✅ Data submitted successfully!';
+          messageElement.className = 'success';
+          messageElement.style.display = 'block';
+
+          // Redirect to index.html after 2 seconds
+          setTimeout(() => {
+            window.location.href = 'index.html';
+          }, 2000); // Adjust the delay if necessary
+        } else {
+          messageElement.textContent = `❌ Error: ${result.error}`;
+          messageElement.className = 'error';
+          messageElement.style.display = 'block';
+        }
+
+        // Fetch pesticide data after form submission
+        fetchPesticideData(farmerData.aadharId);
+
+      } catch (error) {
+        console.error('Error submitting form:', error);
+        const messageElement = document.getElementById('message');
+        messageElement.textContent = '❌ Failed to submit data.';
+        messageElement.className = 'error';
+        messageElement.style.display = 'block';
+      }
+    });
+
+    document.getElementById('aadharId').addEventListener('blur', function() {
+      const aadharNumber = this.value;
+      if (aadharNumber) {
+        fetchPesticideData(aadharNumber);
+      }
+    });
+  </script>
+  <script src="https://cdn.jsdelivr.net/npm/web3@1.6.0/dist/web3.min.js"></script>
+
+  <script>
+    let web3;
+    let farmerDataSubmissionContract;
+  
+    const contractAddress = "0xaE036c65C649172b43ef7156b009c6221B596B8b"; // Replace with your contract address
+    const contractABI = [
+	{
+		"anonymous": false,
+		"inputs": [
+			{
+				"indexed": false,
+				"internalType": "string",
+				"name": "aadharId",
+				"type": "string"
+			},
+			{
+				"indexed": false,
+				"internalType": "string",
+				"name": "name",
+				"type": "string"
+			},
+			{
+				"indexed": false,
+				"internalType": "uint256",
+				"name": "timestamp",
+				"type": "uint256"
+			}
+		],
+		"name": "FarmerDataSubmitted",
+		"type": "event"
+	},
+	{
+		"inputs": [
+			{
+				"internalType": "string",
+				"name": "name",
+				"type": "string"
+			},
+			{
+				"internalType": "string",
+				"name": "aadharId",
+				"type": "string"
+			},
+			{
+				"internalType": "string",
+				"name": "location",
+				"type": "string"
+			},
+			{
+				"internalType": "uint256",
+				"name": "farmSize",
+				"type": "uint256"
+			},
+			{
+				"internalType": "bool",
+				"name": "npopCertified",
+				"type": "bool"
+			},
+			{
+				"internalType": "string[]",
+				"name": "productNames",
+				"type": "string[]"
+			},
+			{
+				"internalType": "uint256[]",
+				"name": "productQuantities",
+				"type": "uint256[]"
+			},
+			{
+				"internalType": "uint256[]",
+				"name": "daysToGrow",
+				"type": "uint256[]"
+			}
+		],
+		"name": "submitFarmerData",
+		"outputs": [],
+		"stateMutability": "nonpayable",
+		"type": "function"
+	},
+	{
+		"inputs": [
+			{
+				"internalType": "string",
+				"name": "",
+				"type": "string"
+			}
+		],
+		"name": "farmers",
+		"outputs": [
+			{
+				"internalType": "string",
+				"name": "name",
+				"type": "string"
+			},
+			{
+				"internalType": "string",
+				"name": "aadharId",
+				"type": "string"
+			},
+			{
+				"internalType": "string",
+				"name": "location",
+				"type": "string"
+			},
+			{
+				"internalType": "uint256",
+				"name": "farmSize",
+				"type": "uint256"
+			},
+			{
+				"internalType": "bool",
+				"name": "npopCertified",
+				"type": "bool"
+			}
+		],
+		"stateMutability": "view",
+		"type": "function"
+	},
+	{
+		"inputs": [
+			{
+				"internalType": "string",
+				"name": "aadharId",
+				"type": "string"
+			}
+		],
+		"name": "getFarmerData",
+		"outputs": [
+			{
+				"internalType": "string",
+				"name": "name",
+				"type": "string"
+			},
+			{
+				"internalType": "string",
+				"name": "location",
+				"type": "string"
+			},
+			{
+				"internalType": "uint256",
+				"name": "farmSize",
+				"type": "uint256"
+			},
+			{
+				"internalType": "bool",
+				"name": "npopCertified",
+				"type": "bool"
+			},
+			{
+				"components": [
+					{
+						"internalType": "string",
+						"name": "productName",
+						"type": "string"
+					},
+					{
+						"internalType": "uint256",
+						"name": "productQuantity",
+						"type": "uint256"
+					},
+					{
+						"internalType": "uint256",
+						"name": "daysToGrow",
+						"type": "uint256"
+					}
+				],
+				"internalType": "struct FarmerDataSubmission.Product[]",
+				"name": "products",
+				"type": "tuple[]"
+			}
+		],
+		"stateMutability": "view",
+		"type": "function"
+	}
+];
+  
+    window.addEventListener('load', () => {
+      // Connect to Ganache's local blockchain
+      web3 = new Web3('http://localhost:7545'); // Ganache default RPC URL
+  
+      // Set up the contract
+      farmerDataSubmissionContract = new web3.eth.Contract(contractABI, contractAddress);
+  
+      // Optionally, you can log the accounts available on Ganache
+      web3.eth.getAccounts().then(console.log);
+    });
+  
+    // Submit the farmer data to the Ethereum smart contract
+    document.getElementById('farmerForm').addEventListener('submit', async (event) => {
+      event.preventDefault();
+  
+      const accounts = await web3.eth.getAccounts(); // Get the first account from Ganache
+      const farmerData = {
+        name: document.getElementById('name').value,
+        aadharId: document.getElementById('aadharId').value,
+        location: document.getElementById('location').value,
+        farmSize: document.getElementById('farmSize').value,
+        numOfProducts: document.getElementById('numOfProducts').value,
+        products: [],
+        npopCertification: document.getElementById('npopCertification').checked,
+      };
+  
+      for (let i = 0; i < farmerData.numOfProducts; i++) {
+        farmerData.products.push({
+          productName: document.getElementById(`productName${i}`).value,
+          productQuantity: document.getElementById(`productQuantity${i}`).value,
+          plantingDate: document.getElementById(`plantingDate${i}`).value,
+          harvestingDate: document.getElementById(`harvestingDate${i}`).value,
+          daysToGrow: document.getElementById(`daysToGrow${i}`).value,
+          cropType: document.getElementById(`cropType${i}`).value,
+        });
+      }
+  
+      try {
+        await farmerDataSubmissionContract.methods
+          .submitFarmerData(
+            farmerData.name,
+            farmerData.aadharId,
+            farmerData.location,
+            farmerData.farmSize,
+            farmerData.npopCertification,
+            farmerData.products.map(p => p.productName),
+            farmerData.products.map(p => p.productQuantity),
+            farmerData.products.map(p => p.daysToGrow)
+          )
+          .send({ from: accounts[0] }); // Send from the first account in Ganache
+  
+        const messageElement = document.getElementById('message');
+        messageElement.textContent = '✅ Data submitted successfully to the blockchain!';
+        messageElement.className = 'success';
+        messageElement.style.display = 'block';
+  
+        // Redirect to index.html after 2 seconds
+        setTimeout(() => {
+          window.location.href = 'index.html';
+        }, 2000); // Adjust the delay if necessary
+  
+      } catch (error) {
+        console.error('Error submitting form:', error);
+        const messageElement = document.getElementById('message');
+        messageElement.textContent = '❌ Failed to submit data.';
+        messageElement.className = 'error';
+        messageElement.style.display = 'block';
+      }
+    });
+  </script>
+  
+</body>
+</html>

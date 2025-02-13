@@ -1,0 +1,126 @@
+/* General Reset */
+body, h1, label, input, button, select {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+/* Body Styling */
+body {
+  font-family: 'Arial', sans-serif;
+  background: linear-gradient(to bottom, #a8e6cf, #d4f1f4); /* Soft light gradient background */
+  color: #333;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  min-height: 100vh;
+  background-image: url('https://extension.unh.edu/sites/default/files/styles/max_width_1200px/public/migrated_images/IMG_8493_0.webp?itok=ISVGcJRx'); /* Subtle farm or nature texture */
+    background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat;
+    background-attachment: fixed;
+    filter: brightness(0.9); /* Slightly lighten the background image */
+}
+
+/* Container Styling */
+.container {
+  background: rgba(255, 255, 255, 0.9); /* Semi-transparent white background */
+  padding: 2rem;
+  border-radius: 12px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+  max-width: 450px;
+  width: 90%;
+  text-align: center;
+  border: 3px solid #4CAF50; /* Green border */
+}
+
+/* Heading Styling */
+.container h1 {
+  font-size: 2rem;
+  color: #4CAF50; /* Green color for the heading */
+  margin-bottom: 1.5rem;
+}
+
+/* Form Styling */
+form {
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+  align-items: center;
+}
+
+/* Label Styling */
+label {
+  font-size: 18px;
+  color: #333;
+  text-align: left;
+  width: 100%;
+  font-weight: bold;
+}
+
+/* Input Fields Styling */
+input[type="text"], input[type="number"], select {
+  padding: 0.9rem;
+  width: 100%;
+  border: 1px solid #ddd;
+  border-radius: 8px;
+  font-size: 1rem;
+  background-color: #f9f9f9;
+}
+
+input:focus, select:focus {
+  border-color: #4CAF50;
+  outline: none;
+  box-shadow: 0 0 6px rgba(76, 175, 80, 0.4);
+}
+
+/* Button Styling */
+button {
+  padding: 0.9rem;
+  font-size: 1rem;
+  background-color: #4CAF50;
+  color: #fff;
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: all 0.3s ease-in-out;
+  width: 100%;
+}
+
+button:hover {
+  background-color: #45a049;
+  transform: scale(1.05);
+}
+
+/* Success/Error Message Styling */
+.message {
+  font-size: 1rem;
+  font-weight: bold;
+  margin-top: 1rem;
+  padding: 0.8rem;
+  border-radius: 8px;
+  display: none; /* Hidden by default */
+}
+
+.message.success {
+  background-color: #d4edda;
+  color: #155724;
+  border: 1px solid #c3e6cb;
+}
+
+.message.error {
+  background-color: #f8d7da;
+  color: #721c24;
+  border: 1px solid #f5c6cb;
+}
+
+/* Responsive Design */
+@media (max-width: 600px) {
+  .container {
+    padding: 2rem;
+  }
+
+  form {
+    gap: 1rem;
+  }
+}
